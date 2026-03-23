@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar Agro - Boi Gordo | Rural IN</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --primary: #1B5E20;
+            --primary-light: #2E7D32;
+            --primary-dark: #0D3B12;
+            --accent: #F9A825;
+            --accent-dark: #F57F17;
+            --bg-dark: #0A0F0A;
+            --bg-card: #111611;
+            --bg-card-alt: #151A15;
+            --text-primary: #E8F5E9;
+            --text-secondary: #A5D6A7;
+            --text-muted: #6B8E6B;
+            --border: #1B3A1B;
+            --red: #EF5350;
+            --red-bg: rgba(239,83,80,0.1);
+            --green: #66BB6A;
+            --green-bg: rgba(102,187,106,0.1);
+            --blue: #42A5F5;
+            --orange: #FFA726;
+            --yellow: #FFEE58;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            padding: 20px 0;
+            border-bottom: 3px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(249,168,37,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-placeholder {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-title h1 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header-title h1 span {
+            color: var(--accent);
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .header-badge {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 10px 18px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-badge .date {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-badge .time {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* TICKER BAR */
+        .ticker-bar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+            overflow: hidden;
+        }
+
+        .ticker-items {
+            display: flex;
+            gap: 32px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0 16px;
+        }
+
+        .ticker-items::-webkit-scrollbar { display: none; }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ticker-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .ticker-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .ticker-var {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .ticker-var.up { color: var(--green); background: var(--green-bg); }
+        .ticker-var.down { color: var(--red); background: var(--red-bg); }
+        .ticker-var.neutral { color: var(--text-muted); background: rgba(107,142,107,0.1); }
+
+        /* MAIN CONTENT */
+        .main-content {
+            padding: 24px 0 40px;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .section-title h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-title h2 span {
+            color: var(--accent);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--primary-light);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(102,187,106,0.3); }
+        .badge-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,83,80,0.3); }
+        .badge-yellow { background: rgba(255,238,88,0.1); color: var(--yellow); border: 1px solid rgba(255,238,88,0.3); }
+        .badge-blue { background: rgba(66,165,245,0.1); color: var(--blue); border: 1px solid rgba(66,165,245,0.3); }
+        .badge-orange { background: rgba(255,167,38,0.1); color: var(--orange); border: 1px solid rgba(255,167,38,0.3); }
+
+        /* PRICE HIGHLIGHT */
+        .price-hero {
+            background: linear-gradient(135deg, rgba(27,94,32,0.3) 0%, rgba(13,59,18,0.5) 100%);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-hero::after {
+            content: '₢';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 6rem;
+            opacity: 0.04;
+            font-weight: 900;
+        }
+
+        .price-hero-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .price-hero-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .price-hero-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .price-hero-sub .var-up { color: var(--green); font-weight: 700; }
+        .price-hero-sub .var-down { color: var(--red); font-weight: 700; }
+
+        /* GRID */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        /* MINI CARD */
+        .mini-card {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .mini-card-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .mini-card-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mini-card-var {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .mini-card-var.up { color: var(--green); }
+        .mini-card-var.down { color: var(--red); }
+
+        /* TABLE */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        thead th {
+            background: var(--bg-card-alt);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 2px solid var(--border);
+        }
+
+        tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover { background: rgba(27,94,32,0.08); }
+
+        .val-up { color: var(--green); font-weight: 600; }
+        .val-down { color: var(--red); font-weight: 600; }
+
+        /* CHART AREA */
+        .chart-container {
+            background: var(--bg-card-alt);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .chart-container svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* ANALYSIS BOX */
+        .analysis-box {
+            background: linear-gradient(135deg, rgba(27,94,32,0.15) 0%, rgba(13,59,18,0.25) 100%);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 12px 12px 0;
+            padding: 20px 24px;
+            margin: 16px 0;
+        }
+
+        .analysis-box h4 {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .analysis-box p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.75;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-box.warning {
+            background: rgba(255,167,38,0.08);
+            border: 1px solid rgba(255,167,38,0.25);
+        }
+
+        .alert-box.danger {
+            background: rgba(239,83,80,0.08);
+            border: 1px solid rgba(239,83,80,0.25);
+        }
+
+        .alert-box.info {
+            background: rgba(66,165,245,0.08);
+            border: 1px solid rgba(66,165,245,0.25);
+        }
+
+        .alert-box.success {
+            background: rgba(102,187,106,0.08);
+            border: 1px solid rgba(102,187,106,0.25);
+        }
+
+        .alert-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content strong {
+            display: block;
+            font-size: 0.82rem;
+            margin-bottom: 4px;
+        }
+
+        .alert-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* SCENARIO CARDS */
+        .scenario-card {
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid;
+            margin-bottom: 12px;
+        }
+
+        .scenario-card.bullish {
+            background: rgba(102,187,106,0.05);
+            border-color: rgba(102,187,106,0.2);
+        }
+
+        .scenario-card.bearish {
+            background: rgba(239,83,80,0.05);
+            border-color: rgba(239,83,80,0.2);
+        }
+
+        .scenario-card.neutral {
+            background: rgba(255,238,88,0.05);
+            border-color: rgba(255,238,88,0.2);
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .scenario-prob {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .scenario-card.bullish .scenario-prob { color: var(--green); }
+        .scenario-card.bearish .scenario-prob { color: var(--red); }
+        .scenario-card.neutral .scenario-prob { color: var(--yellow); }
+
+        .scenario-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .scenario-desc {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .scenario-range {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 8px;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--bg-card);
+            border-top: 3px solid var(--primary);
+            padding: 40px 0 24px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .footer-author h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .footer-author .role {
+            font-size: 0.8rem;
+            color: var(--green);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .footer-author .sub-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .footer-contact-item .icon {
+            font-size: 0.9rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .social-tag {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .footer-disclaimer {
+            text-align: right;
+        }
+
+        .footer-disclaimer p {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-bottom p {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        .footer-motto {
+            color: var(--accent) !important;
+            font-weight: 700;
+            font-size: 0.78rem !important;
+            margin-bottom: 4px;
+        }
+
+        /* PULSE DOT */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102,187,106,0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(102,187,106,0); }
+            100% { box-shadow: 0 0 0 0 rgba(102,187,106,0); }
+        }
+
+        /* GEOPOLITICS PILL */
+        .geo-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin: 4px;
+            font-size: 0.78rem;
+        }
+
+        .geo-pill .flag { font-size: 1rem; }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 28px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-area {
+                flex-direction: column;
+            }
+
+            .header-badge {
+                width: 100%;
+            }
+
+            .price-hero-value {
+                font-size: 2.4rem;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-disclaimer {
+                text-align: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .section-title h2 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .price-hero-value {
+                font-size: 2rem;
+            }
+
+            .price-hero {
+                padding: 20px;
+            }
+
+            .analysis-box {
+                padding: 16px;
+            }
+        }
+
+        /* WATERMARK */
+        .watermark {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            opacity: 0.04;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* TREND ARROW ANIMATION */
+        .trend-arrow {
+            display: inline-block;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="watermark">RURAL IN</div>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-placeholder">
+                    <svg class="logo-text-svg" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="70" height="70" rx="14" fill="white"/>
+                        <rect x="4" y="4" width="62" height="62" rx="10" fill="#1B5E20"/>
+                        <text x="35" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="900" fill="#F9A825">RURAL</text>
+                        <text x="35" y="46" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="900" fill="white">IN</text>
+                        <line x1="14" y1="52" x2="56" y2="52" stroke="#F9A825" stroke-width="2"/>
+                        <text x="35" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="6" font-weight="600" fill="#A5D6A7">INTELIGÊNCIA AGRO</text>
+                    </svg>
+                </div>
+                <div class="header-title">
+                    <h1>RADAR AGRO <span>| BOI GORDO</span></h1>
+                    <p>Pecuária de Corte — Informativo de Mercado</p>
+                </div>
+            </div>
+            <div class="header-badge">
+                <div class="date">Segunda-feira, 23 de Março de 2026</div>
+                <div class="time">📡 Fechamento do Dia</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- TICKER BAR -->
+<div class="ticker-bar">
+    <div class="container">
+        <div class="ticker-items">
+            <div class="ticker-item">
+                <span class="ticker-label">CEPEA/Esalq</span>
+                <span class="ticker-value">R$ 350,70</span>
+                <span class="ticker-var up">+0,01%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">B3 Mar/26</span>
+                <span class="ticker-value">R$ 354,15</span>
+                <span class="ticker-var down">-0,01%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">B3 Abr/26</span>
+                <span class="ticker-value">R$ 358,55</span>
+                <span class="ticker-var up">+0,87%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">B3 Mai/26</span>
+                <span class="ticker-value">R$ 357,50</span>
+                <span class="ticker-var up">+1,10%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">Boi China SP</span>
+                <span class="ticker-value">R$ 350,00</span>
+                <span class="ticker-var neutral">—</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">Dólar</span>
+                <span class="ticker-value">R$ 5,27</span>
+                <span class="ticker-var down">-0,75%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">Bezerro MS</span>
+                <span class="ticker-value">R$ 3.266</span>
+                <span class="ticker-var up">+0,05%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- PREÇO DESTAQUE -->
+        <div class="price-hero">
+            <div class="price-hero-label"><span class="pulse-dot"></span>Indicador Boi Gordo CEPEA/Esalq — 23/03/2026</div>
+            <div class="price-hero-value">R$ 350,70/@</div>
+            <div class="price-hero-sub">
+                Var. Dia: <span class="var-up">+0,01%</span> &nbsp;|&nbsp;
+                Var. Mês: <span class="var-down">-0,69%</span> &nbsp;|&nbsp;
+                US$ 67,02/@
+            </div>
+        </div>
+
+        <!-- GRID RESUMO -->
+        <div class="grid-4" style="margin-bottom: 24px;">
+            <div class="mini-card">
+                <div class="mini-card-label">Físico SP (prazo)</div>
+                <div class="mini-card-value">R$ 350,00</div>
+                <div class="mini-card-var" style="color:var(--text-muted);">Boi China</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-label">Vaca Gorda SP</div>
+                <div class="mini-card-value">R$ 319,00</div>
+                <div class="mini-card-var" style="color:var(--text-muted);">à vista</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-label">Novilha SP</div>
+                <div class="mini-card-value">R$ 335,00</div>
+                <div class="mini-card-var" style="color:var(--text-muted);">Scot Ref.</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-label">Escalas Indústria</div>
+                <div class="mini-card-value">4-5 dias</div>
+                <div class="mini-card-var" style="color:var(--orange);">Curtas</div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: MERCADO FÍSICO -->
+        <div class="section-title">
+            <div class="section-icon">🐂</div>
+            <h2>Mercado Físico — <span>Cotações Regionais</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Praças Pecuárias — Scot Consultoria (20/03/2026)</div>
+                <span class="badge badge-yellow">Referência Semanal</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Praça</th>
+                            <th>Boi Gordo (à vista)</th>
+                            <th>Boi Gordo (prazo 30d)</th>
+                            <th>Vaca Gorda (à vista)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">SP Barretos</td>
+                            <td>R$ 343,50</td>
+                            <td>R$ 347,00</td>
+                            <td>R$ 319,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">SP Araçatuba</td>
+                            <td>R$ 343,50</td>
+                            <td>R$ 347,00</td>
+                            <td>R$ 319,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">MG Triângulo</td>
+                            <td>R$ 325,50</td>
+                            <td>R$ 329,00</td>
+                            <td>R$ 301,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">GO Goiânia</td>
+                            <td>R$ 323,50</td>
+                            <td>R$ 327,00</td>
+                            <td>R$ 304,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">MS C. Grande</td>
+                            <td>R$ 333,50</td>
+                            <td>R$ 337,00</td>
+                            <td>R$ 307,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">MT Cuiabá</td>
+                            <td>R$ 329,50</td>
+                            <td>R$ 345,00</td>
+                            <td>R$ 305,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">TO Araguaína</td>
+                            <td>R$ 311,50</td>
+                            <td>R$ 315,00</td>
+                            <td>R$ 289,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--text-secondary); font-family:Inter,sans-serif; font-weight:600;">BA Sul</td>
+                            <td>R$ 314,00</td>
+                            <td>R$ 317,00</td>
+                            <td>R$ 292,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: B3 FUTURO -->
+        <div class="section-title">
+            <div class="section-icon">📊</div>
+            <h2>Mercado Futuro B3 — <span>Pregão 23/03/2026</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Contratos Futuros — Boi Gordo (BGI)</div>
+                <span class="badge badge-green">B3 — PREGÃO REGULAR</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contrato</th>
+                            <th>Fechamento</th>
+                            <th>Variação</th>
+                            <th>Sinal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Março/2026</td>
+                            <td>R$ 354,15</td>
+                            <td class="val-down">-0,01%</td>
+                            <td>⚖️ Estável</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Abril/2026</td>
+                            <td>R$ 358,55</td>
+                            <td class="val-up">+0,87%</td>
+                            <td>🟢 Alta</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Maio/2026</td>
+                            <td>R$ 357,50</td>
+                            <td class="val-up">+1,10%</td>
+                            <td>🟢 Alta</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Junho/2026</td>
+                            <td>R$ 351,90</td>
+                            <td class="val-down">-0,10%</td>
+                            <td>⚖️ Estável</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Julho/2026</td>
+                            <td>R$ 348,10</td>
+                            <td class="val-down">-0,23%</td>
+                            <td>🔴 Leve queda</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Agosto/2026</td>
+                            <td>R$ 347,30</td>
+                            <td class="val-down">-0,49%</td>
+                            <td>🔴 Queda</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent); font-weight:700; font-family:Inter,sans-serif;">Setembro/2026</td>
+                            <td>R$ 346,50</td>
+                            <td class="val-down">-0,14%</td>
+                            <td>🔴 Queda</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="analysis-box">
+                <h4>📌 Leitura da Curva Futura</h4>
+                <p>A curva futura na B3 desenha um cenário de <strong>fortalecimento de curto prazo</strong> (Abr/Mai) seguido de <strong>inversão para queda</strong> a partir de junho. O contrato de Abril/26 lidera com <strong>R$ 358,55/@</strong>, refletindo a expectativa de manutenção da oferta restrita e demanda exportadora aquecida no segundo trimestre. A partir de julho, o mercado precifica entrada do boi de confinamento e possível aumento de oferta, com desvalorização progressiva até setembro (R$ 346,50). A estrutura é de <strong>backwardation parcial</strong> — sinal de mercado spot apertado.</p>
+            </div>
+        </div>
+
+        <!-- GRÁFICO: INDICADOR CEPEA MARÇO -->
+        <div class="section-title">
+            <div class="section-icon">📈</div>
+            <h2>Análise Gráfica — <span>Indicador CEPEA Março/2026</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Evolução do Indicador CEPEA/Esalq — Março 2026</div>
+                <span class="badge badge-blue">ANÁLISE TÉCNICA</span>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Grid -->
+                    <defs>
+                        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#66BB6A" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#66BB6A" stop-opacity="0.02"/>
+                        </linearGradient>
+                        <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#2E7D32"/>
+                            <stop offset="50%" stop-color="#66BB6A"/>
+                            <stop offset="100%" stop-color="#F9A825"/>
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Background grid lines -->
+                    <line x1="60" y1="40" x2="760" y2="40" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="60" y1="100" x2="760" y2="100" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="60" y1="160" x2="760" y2="160" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="60" y1="220" x2="760" y2="220" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="60" y1="280" x2="760" y2="280" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+
+                    <!-- Y Axis Labels -->
+                    <text x="52" y="44" fill="#6B8E6B" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">353</text>
+                    <text x="52" y="104" fill="#6B8E6B" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">351</text>
+                    <text x="52" y="164" fill="#6B8E6B" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">349</text>
+                    <text x="52" y="224" fill="#6B8E6B" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">347</text>
+                    <text x="52" y="284" fill="#6B8E6B" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">345</text>
+
+                    <!-- Price Scale: 345 = y280, 353 = y40. Range=8. pixel per unit = 240/8 = 30 -->
+                    <!-- Data points (date, value, x, y):
+                         03/03: 350.50 -> x=90, y= 280 - (350.50-345)*30 = 280-165 = 115
+                         04/03: 348.65 -> x=136, y= 280 - (348.65-345)*30 = 280-109.5 = 170.5
+                         05/03: 347.30 -> x=182, y= 280 - (347.30-345)*30 = 280-69 = 211
+                         06/03: 346.05 -> x=228, y= 280 - (346.05-345)*30 = 280-31.5 = 248.5
+                         09/03: 347.40 -> x=274, y= 280 - (347.40-345)*30 = 280-72 = 208
+                         10/03: 346.80 -> x=320, y= 280 - (346.80-345)*30 = 280-54 = 226
+                         11/03: 347.25 -> x=366, y= 280 - (347.25-345)*30 = 280-67.5 = 212.5
+                         12/03: 347.50 -> x=412, y= 280 - (347.50-345)*30 = 280-75 = 205
+                         13/03: 346.60 -> x=458, y= 280 - (346.60-345)*30 = 280-48 = 232
+                         16/03: 346.45 -> x=504, y= 280 - (346.45-345)*30 = 280-43.5 = 236.5
+                         17/03: 347.70 -> x=550, y= 280 - (347.70-345)*30 = 280-81 = 199
+                         18/03: 348.85 -> x=596, y= 280 - (348.85-345)*30 = 280-115.5 = 164.5
+                         19/03: 349.60 -> x=642, y= 280 - (349.60-345)*30 = 280-138 = 142
+                         20/03: 350.65 -> x=688, y= 280 - (350.65-345)*30 = 280-169.5 = 110.5
+                         23/03: 350.70 -> x=734, y= 280 - (350.70-345)*30 = 280-171 = 109
+                    -->
+
+                    <!-- Area fill -->
+                    <polygon points="90,115 136,170.5 182,211 228,248.5 274,208 320,226 366,212.5 412,205 458,232 504,236.5 550,199 596,164.5 642,142 688,110.5 734,109 734,280 90,280" fill="url(#areaGrad)"/>
+
+                    <!-- Line -->
+                    <polyline points="90,115 136,170.5 182,211 228,248.5 274,208 320,226 366,212.5 412,205 458,232 504,236.5 550,199 596,164.5 642,142 688,110.5 734,109" fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+                    <!-- Data points -->
+                    <circle cx="90" cy="115" r="4" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="136" cy="170.5" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="182" cy="211" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="228" cy="248.5" r="4" fill="#EF5350" stroke="#EF5350" stroke-width="1.5"/>
+                    <circle cx="274" cy="208" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="320" cy="226" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="366" cy="212.5" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="412" cy="205" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="458" cy="232" r="3.5" fill="#2E7D32" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="504" cy="236.5" r="4" fill="#EF5350" stroke="#EF5350" stroke-width="1.5"/>
+                    <circle cx="550" cy="199" r="3.5" fill="#66BB6A" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="596" cy="164.5" r="3.5" fill="#66BB6A" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="642" cy="142" r="3.5" fill="#66BB6A" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="688" cy="110.5" r="3.5" fill="#66BB6A" stroke="#66BB6A" stroke-width="1.5"/>
+                    <circle cx="734" cy="109" r="5" fill="#F9A825" stroke="#F9A825" stroke-width="2"/>
+
+                    <!-- Min annotation -->
+                    <line x1="228" y1="248.5" x2="228" y2="270" stroke="#EF5350" stroke-width="0.8" stroke-dasharray="3"/>
+                    <rect x="196" y="270" width="64" height="18" rx="4" fill="rgba(239,83,80,0.15)" stroke="#EF5350" stroke-width="0.5"/>
+                    <text x="228" y="282" text-anchor="middle" fill="#EF5350" font-size="8" font-weight="600" font-family="JetBrains Mono, monospace">346,05 MIN</text>
+
+                    <!-- Current annotation -->
+                    <line x1="734" y1="109" x2="734" y2="85" stroke="#F9A825" stroke-width="0.8" stroke-dasharray="3"/>
+                    <rect x="690" y="68" width="88" height="18" rx="4" fill="rgba(249,168,37,0.2)" stroke="#F9A825" stroke-width="0.5"/>
+                    <text x="734" y="80" text-anchor="middle" fill="#F9A825" font-size="8" font-weight="700" font-family="JetBrains Mono, monospace">350,70 HOJE</text>
+
+                    <!-- Support line ~346.5 -->
+                    <line x1="60" y1="235" x2="760" y2="235" stroke="#EF5350" stroke-width="1" stroke-dasharray="6,3" opacity="0.5"/>
+                    <text x="765" y="238" fill="#EF5350" font-size="8" font-family="JetBrains Mono, monospace" opacity="0.7">Suporte 346,50</text>
+
+                    <!-- Resistance line ~353 -->
+                    <line x1="60" y1="42" x2="760" y2="42" stroke="#66BB6A" stroke-width="1" stroke-dasharray="6,3" opacity="0.5"/>
+                    <text x="765" y="46" fill="#66BB6A" font-size="8" font-family="JetBrains Mono, monospace" opacity="0.7">Resist. 353,00</text>
+
+                    <!-- Trend line (from low ~504,236 to current 734,109) -->
+                    <line x1="504" y1="236.5" x2="760" y2="98" stroke="#F9A825" stroke-width="1.2" stroke-dasharray="8,4" opacity="0.6"/>
+
+                    <!-- X axis labels -->
+                    <text x="90" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">03</text>
+                    <text x="182" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">05</text>
+                    <text x="274" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">09</text>
+                    <text x="366" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">11</text>
+                    <text x="458" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">13</text>
+                    <text x="550" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">17</text>
+                    <text x="642" y="305" fill="#6B8E6B" font-size="8" text-anchor="middle" font-family="JetBrains Mono, monospace">19</text>
+                    <text x="734" y="305" fill="#F9A825" font-size="8" text-anchor="middle" font-weight="700" font-family="JetBrains Mono, monospace">23</text>
+                    <text x="410" y="330" fill="#6B8E6B" font-size="9" text-anchor="middle" font-family="Inter, sans-serif">Março 2026 — Dias úteis</text>
+
+                    <!-- Legend -->
+                    <rect x="80" y="15" width="8" height="3" rx="1" fill="#66BB6A"/>
+                    <text x="92" y="19" fill="#A5D6A7" font-size="8" font-family="Inter, sans-serif">Indicador CEPEA</text>
+                    <rect x="180" y="15" width="8" height="3" rx="1" fill="#F9A825"/>
+                    <text x="192" y="19" fill="#F9A825" font-size="8" font-family="Inter, sans-serif">Linha de tendência (LTA)</text>
+                    <rect x="310" y="15" width="8" height="3" rx="1" fill="#EF5350"/>
+                    <text x="322" y="19" fill="#EF5350" font-size="8" font-family="Inter, sans-serif">Suporte</text>
+                </svg>
+            </div>
+            <div class="analysis-box">
+                <h4>🔍 Análise Técnica — Leitura Grafista</h4>
+                <p>O indicador CEPEA formou um padrão clássico de <strong>"V-Recovery"</strong> no mês de março. Após abrir em R$ 350,50 no dia 03/03, o mercado sofreu correção até a mínima mensal de <strong>R$ 346,05</strong> (06/03), zona que coincide com o suporte técnico em R$ 346,50. A partir do dia 16/03 (fundo duplo em R$ 346,45), iniciou-se um <strong>rali de recuperação de 5 pregões consecutivos de alta</strong>, levando a arroba de volta aos R$ 350,70 no fechamento de hoje.</p>
+                <p style="margin-top:10px;">A <strong>Linha de Tendência de Alta (LTA)</strong> traçada a partir do fundo de 16/03 permanece intacta. O <strong>suporte imediato</strong> situa-se em <strong>R$ 348,50-349,00</strong> (média móvel de 5 dias), enquanto a <strong>resistência</strong> está em <strong>R$ 353,00-353,15</strong> (máxima histórica nominal de fev/26). Para confirmar rompimento altista, o mercado precisa fechar acima de R$ 353,15 com volume. A estrutura técnica é <strong>moderadamente altista</strong>.</p>
+            </div>
+        </div>
+
+        <!-- GRÁFICO: CURVA FUTURA B3 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Curva Futura B3 — Estrutura a Termo (23/03)</div>
+                <span class="badge badge-orange">CURVA FORWARD</span>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#F9A825"/>
+                            <stop offset="100%" stop-color="#1B5E20"/>
+                        </linearGradient>
+                        <linearGradient id="barGradHigh" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#F9A825"/>
+                            <stop offset="100%" stop-color="#66BB6A"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Grid -->
+                    <line x1="80" y1="50" x2="740" y2="50" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="80" y1="100" x2="740" y2="100" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="80" y1="150" x2="740" y2="150" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="80" y1="200" x2="740" y2="200" stroke="#1B3A1B" stroke-width="0.5" stroke-dasharray="4"/>
+
+                    <!-- Y axis: 340 = y230, 360 = y30. Range=20, pixel per unit = 200/20 = 10 -->
+                    <text x="72" y="54" fill="#6B8E6B" font-size="9" text-anchor="end" font-family="JetBrains Mono, monospace">360</text>
+                    <text x="72" y="104" fill="#6B8E6B" font-size="9" text-anchor="end" font-family="JetBrains Mono, monospace">355</text>
+                    <text x="72" y="154" fill="#6B8E6B" font-size="9" text-anchor="end" font-family="JetBrains Mono, monospace">350</text>
+                    <text x="72" y="204" fill="#6B8E6B" font-size="9" text-anchor="end" font-family="JetBrains Mono, monospace">345</text>
+                    <text x="72" y="234" fill="#6B8E6B" font-size="9" text-anchor="end" font-family="JetBrains Mono, monospace">342</text>
+
+                    <!-- Bars: base at y=230 (340 level)
+                         Mar 354.15 -> height = (354.15-340)*10 = 141.5, y = 230-141.5 = 88.5
+                         Abr 358.55 -> height = 185.5, y = 44.5
+                         Mai 357.50 -> height = 175, y = 55
+                         Jun 351.90 -> height = 119, y = 111
+                         Jul 348.10 -> height = 81, y = 149
+                         Ago 347.30 -> height = 73, y = 157
+                         Set 346.50 -> height = 65, y = 165
+                    -->
+
+                    <!-- Mar -->
+                    <rect x="105" y="88.5" width="55" height="141.5" rx="4" fill="url(#barGrad)" opacity="0.85"/>
+                    <text x="132.5" y="82" text-anchor="middle" fill="#F9A825" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">354,15</text>
+                    <text x="132.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">MAR</text>
+
+                    <!-- Abr (highest) -->
+                    <rect x="195" y="44.5" width="55" height="185.5" rx="4" fill="url(#barGradHigh)" opacity="1"/>
+                    <text x="222.5" y="38" text-anchor="middle" fill="#F9A825" font-size="11" font-weight="800" font-family="JetBrains Mono, monospace">358,55</text>
+                    <text x="222.5" y="252" text-anchor="middle" fill="#F9A825" font-size="10" font-weight="700" font-family="Inter, sans-serif">ABR ★</text>
+
+                    <!-- Mai -->
+                    <rect x="285" y="55" width="55" height="175" rx="4" fill="url(#barGradHigh)" opacity="0.9"/>
+                    <text x="312.5" y="49" text-anchor="middle" fill="#F9A825" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">357,50</text>
+                    <text x="312.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">MAI</text>
+
+                    <!-- Jun -->
+                    <rect x="375" y="111" width="55" height="119" rx="4" fill="url(#barGrad)" opacity="0.75"/>
+                    <text x="402.5" y="105" text-anchor="middle" fill="#E8F5E9" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">351,90</text>
+                    <text x="402.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">JUN</text>
+
+                    <!-- Jul -->
+                    <rect x="465" y="149" width="55" height="81" rx="4" fill="url(#barGrad)" opacity="0.6"/>
+                    <text x="492.5" y="143" text-anchor="middle" fill="#E8F5E9" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">348,10</text>
+                    <text x="492.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">JUL</text>
+
+                    <!-- Ago -->
+                    <rect x="555" y="157" width="55" height="73" rx="4" fill="url(#barGrad)" opacity="0.5"/>
+                    <text x="582.5" y="151" text-anchor="middle" fill="#E8F5E9" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">347,30</text>
+                    <text x="582.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">AGO</text>
+
+                    <!-- Set -->
+                    <rect x="645" y="165" width="55" height="65" rx="4" fill="url(#barGrad)" opacity="0.4"/>
+                    <text x="672.5" y="159" text-anchor="middle" fill="#E8F5E9" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">346,50</text>
+                    <text x="672.5" y="252" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="600" font-family="Inter, sans-serif">SET</text>
+
+                    <!-- Trend line -->
+                    <polyline points="132.5,88.5 222.5,44.5 312.5,55 402.5,111 492.5,149 582.5,157 672.5,165" fill="none" stroke="#EF5350" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+
+                    <!-- Labels -->
+                    <text x="410" y="285" text-anchor="middle" fill="#6B8E6B" font-size="9" font-family="Inter, sans-serif">Vencimentos — Contratos Futuros B3 (R$/@)</text>
+                </svg>
+            </div>
+            <div class="analysis-box">
+                <h4>📐 Leitura da Estrutura a Termo</h4>
+                <p>A curva forma um <strong>"hump" (corcova)</strong> com pico em Abril (R$ 358,55) e declínio gradual. Isso indica que o mercado está precificando o <strong>pico de escassez de oferta</strong> entre abril e maio, com a virada da safra e menor disponibilidade de boi terminado a pasto. A partir de junho, a expectativa de início da safra de confinamento e maior oferta pressiona os preços para baixo. A <strong>diferença entre o pico (Abr) e o piso (Set) é de R$ 12,05/@</strong> — spread relevante para quem trabalha com <strong>hedge e venda antecipada</strong>.</p>
+            </div>
+        </div>
+
+        <!-- ANÁLISE FUNDAMENTALISTA -->
+        <div class="section-title">
+            <div class="section-icon">🧠</div>
+            <h2>Análise Fundamentalista — <span>Drivers do Mercado</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Fatores Fundamentais — Oferta, Demanda e Câmbio</div>
+                <span class="badge badge-green">ANÁLISE INTEGRADA</span>
+            </div>
+
+            <div class="alert-box success">
+                <span class="alert-icon">🟢</span>
+                <div class="alert-content">
+                    <strong style="color:var(--green);">EXPORTAÇÕES RECORDES — Pilar altista sustentado</strong>
+                    <p>O Brasil exportou <strong>467.711 toneladas de carne bovina in natura</strong> nos dois primeiros meses de 2026 — recorde histórico para o período, alta de <strong>+26,1%</strong> vs 2025. A China comprou 223,4 mil ton (+21,6%) e os EUA aumentaram compras em +60%. Em fevereiro, a receita atingiu <strong>R$ 6,91 bilhões</strong> (+28%). O embarque diário médio chegou a 13,1 mil ton/dia, 37,6% acima de fev/25. A demanda internacional segue como principal vetor de sustentação de preços.</p>
+                </div>
+            </div>
+
+            <div class="alert-box warning">
+                <span class="alert-icon">🟡</span>
+                <div class="alert-content">
+                    <strong style="color:var(--orange);">OFERTA RESTRITA — Escalas curtas limitam pressão vendedora</strong>
+                    <p>As escalas de abate dos frigoríficos operam entre <strong>4 e 5 dias</strong> em São Paulo, sinal de oferta apertada. Boas condições de pastagem permitem ao pecuarista segurar o gado sem pressão, negociando "um dia de cada vez". A menor oferta de machos e a valorização do bezerro (<strong>+20% em 12 meses</strong>, R$ 3.266/cab em MS) reforçam a escassez de animais prontos para abate. A reposição cara sinaliza continuidade da restrição no médio prazo.</p>
+                </div>
+            </div>
+
+            <div class="alert-box info">
+                <span class="alert-icon">🔵</span>
+                <div class="alert-content">
+                    <strong style="color:var(--blue);">DEMANDA INTERNA — Sazonalidade pressiona na 2ª quinzena</strong>
+                    <p>O consumo interno sofre com a sazonalidade típica da segunda quinzena do mês, quando o poder de compra das famílias diminui. O varejo reduziu reposição de estoques e a carcaça casada recuou levemente. O preço elevado da proteína bovina (atacado recordista em R$ 22,96/kg da carcaça) limita o avanço do consumo doméstico. A competição com frango e suíno também modera a demanda.</p>
+                </div>
+            </div>
+
+            <div class="alert-box danger">
+                <span class="alert-icon">🔴</span>
+                <div class="alert-content">
+                    <strong style="color:var(--red);">CÂMBIO — Dólar em queda limita ganho em reais</strong>
+                    <p>O dólar comercial recuou para <strong>R$ 5,27 (-0,75%)</strong> no dia, pressionado por perspectivas de acordo EUA-Irã que derrubaram o petróleo e reduziram aversão a risco. A valorização do real <strong>prejudica a competitividade</strong> da carne brasileira no exterior e reduz o ganho do exportador em moeda local. O indicador em dólar subiu para US$ 67,02/@ (+1,67% no dia), mas a variação mensal em dólar é <strong>-2,52%</strong> — sinal de que o real forte comprime margens.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FATORES MACRO E GEOPOLÍTICOS -->
+        <div class="section-title">
+            <div class="section-icon">🌍</div>
+            <h2>Radar Macro & Geopolítico — <span>Fique de Olho</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Fatores Macroeconômicos e Geopolíticos</div>
+                <span class="badge badge-red">⚠️ ATENÇÃO</span>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">
+                <div class="geo-pill"><span class="flag">🇺🇸🇮🇷</span> <span style="color:var(--text-secondary);">Acordo EUA-Irã: queda do petróleo e do dólar</span></div>
+                <div class="geo-pill"><span class="flag">🛢️</span> <span style="color:var(--text-secondary);">Brent a US$ 97,5 (-9,8%) — pressão logística alivia</span></div>
+                <div class="geo-pill"><span class="flag">🇨🇳</span> <span style="color:var(--text-secondary);">China mantém demanda forte por carne brasileira</span></div>
+                <div class="geo-pill"><span class="flag">💵</span> <span style="color:var(--text-secondary);">Dólar R$ 5,27 — real forte limita margem exportadora</span></div>
+                <div class="geo-pill"><span class="flag">⛽</span> <span style="color:var(--text-secondary);">Alta dos combustíveis: frete mais caro para gado e carne</span></div>
+                <div class="geo-pill"><span class="flag">🏛️</span> <span style="color:var(--text-secondary);">Ibovespa 181.643 pts (+3,08%) — apetite a risco</span></div>
+                <div class="geo-pill"><span class="flag">💥</span> <span style="color:var(--text-secondary);">Conflito Oriente Médio: impactos no petróleo e logística</span></div>
+                <div class="geo-pill"><span class="flag">📈</span> <span style="color:var(--text-secondary);">Selic elevada: custo de confinamento e capital de giro</span></div>
+            </div>
+
+            <div class="analysis-box">
+                <h4>🔎 Análise Macro-Geopolítica</h4>
+                <p><strong>1) Acordo EUA-Irã e Petróleo:</strong> A perspectiva de normalização das relações entre EUA e Irã derrubou o petróleo Brent (-9,8%), aliviando custos de frete e logística. Ao mesmo tempo, o dólar perdeu força globalmente, o que fortalece o real. Para o boi gordo, o efeito é <strong>misto</strong>: o frete mais barato beneficia o escoamento, mas a queda do dólar reduz receita exportadora em reais.</p>
+                <p style="margin-top:8px;"><strong>2) China como pilar de demanda:</strong> Os embarques recordes mostram que a China segue como comprador voraz de carne brasileira. Qualquer ruptura nessa relação comercial representaria risco severo de queda. Por ora, o cenário é positivo.</p>
+                <p style="margin-top:8px;"><strong>3) Juros e Custo de Capital:</strong> A Selic elevada encarece o capital de giro para confinamento e engorda, podendo reduzir a oferta futura de boi terminado. O produtor deve monitorar a próxima decisão do Copom e seus impactos no custo financeiro da atividade.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CENÁRIOS PRÓXIMOS 2 DIAS -->
+        <div class="section-title">
+            <div class="section-icon">🔮</div>
+            <h2>Projeção — <span>Terça (24/03) e Quarta (25/03)</span></h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Cenários para os Próximos 2 Dias</div>
+                <span class="badge badge-yellow">PROJEÇÃO RURAL IN</span>
+            </div>
+
+            <div class="scenario-card bullish">
+                <div class="scenario-header">
+                    <span class="scenario-prob">45%</span>
+                    <span class="scenario-label" style="color:var(--green);">🟢 CENÁRIO ALTISTA — Continuidade da Recuperação</span>
+                </div>
+                <p class="scenario-desc">A sequência de <strong>5 pregões de alta</strong> acumulou momentum comprador. Com escalas curtas, oferta restrita e exportações recordes, o mercado pode continuar subindo rumo à resistência de R$ 353,00. A entrada de compradores que travaram hedge na B3 para abril (R$ 358,55) cria urgência nas compras do físico. Se o dólar estabilizar acima de R$ 5,25, a demanda externa sustenta.</p>
+                <div class="scenario-range">📍 Faixa projetada: R$ 350,70 – R$ 353,00/@</div>
+            </div>
+
+            <div class="scenario-card neutral">
+                <div class="scenario-header">
+                    <span class="scenario-prob">40%</span>
+                    <span class="scenario-label" style="color:var(--yellow);">🟡 CENÁRIO BASE — Lateralização com Viés Positivo</span>
+                </div>
+                <p class="scenario-desc">A variação de apenas +0,01% hoje sinaliza <strong>perda de força no rali</strong> — típico de início de semana com poucos negócios. É provável que compradores e vendedores entrem em "modo observação", negociando pontualmente na faixa atual. A sazonalidade de final de mês limita o consumo interno, mas a oferta restrita evita quedas expressivas. Mercado "de lado".</p>
+                <div class="scenario-range">📍 Faixa projetada: R$ 349,50 – R$ 351,50/@</div>
+            </div>
+
+            <div class="scenario-card bearish">
+                <div class="scenario-header">
+                    <span class="scenario-prob">15%</span>
+                    <span class="scenario-label" style="color:var(--red);">🔴 CENÁRIO DE RISCO — Correção Técnica</span>
+                </div>
+                <p class="scenario-desc">Após 5 altas consecutivas, uma realização de lucros no mercado futuro pode arrastar o físico. Se o dólar continuar em queda acentuada (abaixo de R$ 5,20), a pressão sobre a margem do exportador pode levar frigoríficos a reduzirem ofertas. Uma eventual escalada no conflito do Oriente Médio impactaria logística marítima e poderia travar embarques temporariamente. Cenário de menor probabilidade dadas as escalas curtas.</p>
+                <div class="scenario-range">📍 Faixa projetada: R$ 348,00 – R$ 349,50/@</div>
+            </div>
+
+            <div class="analysis-box">
+                <h4>💡 Recomendação Estratégica ao Produtor</h4>
+                <p><strong>Para quem tem boi pronto:</strong> O momento é favorável para negociação. Com a B3 precificando Abril a R$ 358,55, há espaço para travar vendas futuras com hedge, garantindo margem mesmo em cenários de correção. Negocie com referência no indicador CEPEA (R$ 350,70) e não aceite deságios abusivos.</p>
+                <p style="margin-top:8px;"><strong>Para quem está comprando reposição:</strong> O bezerro a R$ 3.266/cab exige cautela na conta da engorda. Faça a conta de custo de reposição + diária + frete e compare com o preço futuro de vencimento compatível com a saída do lote. O spread boi gordo/bezerro ainda remunera, mas estreitou.</p>
+                <p style="margin-top:8px;"><strong>Gestão de risco:</strong> Considere travar 30-40% da produção futura nos contratos de Abril e Maio na B3, aproveitando o prêmio sobre o físico atual.</p>
+            </div>
+        </div>
+
+        <!-- RESUMO EXECUTIVO -->
+        <div class="section-title">
+            <div class="section-icon">📋</div>
+            <h2>Resumo Executivo — <span>Quadro Sintético</span></h2>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 24px;">
+            <div class="mini-card" style="border-color: var(--green);">
+                <div class="mini-card-label">Tendência Curto Prazo</div>
+                <div class="mini-card-value" style="color:var(--green);">ALTISTA</div>
+                <div class="mini-card-var up">⬆ Recuperação</div>
+            </div>
+            <div class="mini-card" style="border-color: var(--yellow);">
+                <div class="mini-card-label">Tendência Médio Prazo</div>
+                <div class="mini-card-value" style="color:var(--yellow);">LATERAL</div>
+                <div class="mini-card-var" style="color:var(--yellow);">⬌ Acomodação</div>
+            </div>
+            <div class="mini-card" style="border-color: var(--orange);">
+                <div class="mini-card-label">Volatilidade</div>
+                <div class="mini-card-value" style="color:var(--orange);">MODERADA</div>
+                <div class="mini-card-var" style="color:var(--orange);">⚡ Cautela</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="mini-card">
+                <div class="mini-card-label">Suporte Técnico</div>
+                <div class="mini-card-value" style="color:var(--red);">R$ 346,50</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-label">Resistência Técnica</div>
+                <div class="mini-card-value" style="color:var(--green);">R$ 353,15</div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-author">
+                <p class="footer-motto" style="font-size:0.7rem; margin-bottom:10px;">ANÁLISE E CONSTRUÇÃO</p>
+                <h3>Dr. Sidney Souza</h3>
+                <p class="role">Economista Agrícola</p>
+                <p class="role">Estrategista Econômico do Produtor</p>
+                <p class="sub-role">Especialista em economia da fazenda e gestão de risco no agro</p>
+                <p class="sub-role" style="color:var(--accent); font-weight:600; font-style:italic;">"Transformamos dados da fazenda em decisões econômicas"</p>
+                <p class="sub-role" style="color:var(--text-secondary);">"Ajudamos produtores a entender se o mercado sustenta seu negócio"</p>
+
+                <div class="footer-contact-item">
+                    <span class="icon">📧</span>
+                    <span>sidneyagro@gmail.com</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="icon">📱</span>
+                    <span>(64) 9 9226-6886</span>
+                </div>
+
+                <div class="footer-social">
+                    <span class="social-tag">📍 @ruralin.ai</span>
+                    <span class="social-tag">📍 @sidneyagrosa</span>
+                </div>
+            </div>
+
+            <div class="footer-disclaimer">
+                <div style="margin-bottom:16px;">
+                    <svg viewBox="0 0 120 50" xmlns="http://www.w3.org/2000/svg" width="120">
+                        <rect width="120" height="50" rx="8" fill="#1B5E20"/>
+                        <text x="60" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="900" fill="#F9A825">RURAL</text>
+                        <text x="60" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="900" fill="white">IN</text>
+                        <line x1="20" y1="44" x2="100" y2="44" stroke="#F9A825" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <p><strong style="color:var(--text-secondary);">Aviso Legal:</strong> Este informativo tem caráter educacional e analítico. Não constitui recomendação de investimento. As projeções são baseadas em dados públicos e metodologia proprietária. Decisões de comercialização são de exclusiva responsabilidade do produtor.</p>
+                <p style="margin-top:8px;"><strong style="color:var(--text-secondary);">Fontes:</strong> CEPEA/Esalq, B3, Scot Consultoria, Agrifatto, Secex/MDIC, Notícias Agrícolas, Globo Rural, Portal DBO, FarmNews.</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-motto">🐂 Transformamos dados da fazenda em decisões econômicas</p>
+            <p>© 2026 Rural IN — Inteligência Agro | Todos os direitos reservados</p>
+            <p style="margin-top:4px;">Radar Agro Boi Gordo — Edição 23/03/2026 — Segunda-feira</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
