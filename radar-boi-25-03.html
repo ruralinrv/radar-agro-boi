@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar Agro Boi — 25/03/2026 | Rural IN</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#060b14;color:#e0e0e0;min-height:100vh}
+.pg{max-width:940px;margin:0 auto;padding:10px}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(90deg,#0d1520,#122218,#0d1520);padding:10px 20px;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a3a2a;flex-wrap:wrap;gap:8px}
+.topbar .logo{display:flex;align-items:center;gap:12px}
+.topbar .logo-ic{width:52px;height:52px;background:linear-gradient(135deg,#2e7d32,#1b5e20);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6em;box-shadow:0 4px 20px rgba(76,175,80,.25);position:relative;overflow:hidden}
+.topbar .logo-ic::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.08));border-radius:12px}
+.topbar .logo-txt h2{font-size:1.1em;font-weight:900;color:#fff;letter-spacing:1.5px}
+.topbar .logo-txt small{font-size:.65em;color:#81c784;font-weight:600;display:block;letter-spacing:.5px}
+.topbar .ed{text-align:right}
+.topbar .ed .dt{font-size:.92em;font-weight:800;color:#ffd740;letter-spacing:.5px}
+.topbar .ed .inf{font-size:.64em;color:#6b7280;font-weight:600}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#1a5e1a,#0d3b0d 50%,#1a5e1a);padding:24px 20px;text-align:center;border-bottom:3px solid #4CAF50;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,255,255,.01) 30px,rgba(255,255,255,.01) 60px)}
+.hdr h1{font-size:1.5em;font-weight:900;color:#fff;position:relative;z-index:1;text-transform:uppercase;letter-spacing:3px}
+.hdr .sub{font-size:.82em;color:#a5d6a7;margin-top:6px;font-weight:500;position:relative;z-index:1}
+.hdr .pills{margin-top:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;z-index:1}
+.pill{padding:5px 14px;border-radius:22px;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;backdrop-filter:blur(4px)}
+.pill-g{background:rgba(76,175,80,.18);color:#69f0ae;border:1px solid rgba(76,175,80,.4)}
+.pill-y{background:rgba(255,215,64,.12);color:#ffd740;border:1px solid rgba(255,215,64,.3)}
+.pill-r{background:rgba(239,83,80,.12);color:#ef5350;border:1px solid rgba(239,83,80,.3)}
+.pill-b{background:rgba(66,165,245,.12);color:#42a5f5;border:1px solid rgba(66,165,245,.3)}
+
+.mn{background:#0e1521;padding:22px;border:1px solid #162a20;border-top:none}
+
+/* BIG FLASH */
+.flash{background:linear-gradient(135deg,#0f2a15,#122a1a,#0d2010);border:2px solid #2e7d32;border-radius:14px;padding:20px;margin-bottom:20px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;box-shadow:0 0 30px rgba(76,175,80,.08)}
+.flash .emo{font-size:3em;text-align:center}
+.flash .txt h3{font-size:.9em;color:#69f0ae;font-weight:800;text-transform:uppercase;letter-spacing:1.5px}
+.flash .txt p{font-size:.85em;color:#c8e6c9;margin-top:5px;line-height:1.7}
+.flash .big{text-align:center}
+.flash .big .num{font-size:2.4em;font-weight:900;color:#fff;line-height:1}
+.flash .big .var{font-size:1em;font-weight:800;color:#69f0ae;margin-top:4px}
+.flash .big .lbl{font-size:.6em;color:#81c784;font-weight:600;margin-top:2px}
+
+/* GAUGE / SPEED */
+.gauge-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.gauge{background:#131e2c;border-radius:12px;padding:14px 10px;text-align:center;border:1px solid #1e2e3e;position:relative;overflow:hidden}
+.gauge::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.gauge.gup::before{background:linear-gradient(90deg,#1b5e20,#69f0ae)}.gauge.gdn::before{background:linear-gradient(90deg,#b71c1c,#ef5350)}.gauge.gnt::before{background:linear-gradient(90deg,#e65100,#ffd740)}.gauge.gbl::before{background:linear-gradient(90deg,#0d47a1,#42a5f5)}
+.gauge .gl{font-size:.58em;color:#78909c;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:5px}
+.gauge .gv{font-size:1.25em;font-weight:900;color:#fff}
+.gauge .gs{font-size:.72em;margin-top:3px;font-weight:700}
+.gauge.gup .gv{color:#69f0ae}.gauge.gup .gs{color:#69f0ae}
+.gauge.gdn .gv{color:#ef5350}.gauge.gdn .gs{color:#ef5350}
+.gauge.gnt .gv{color:#ffd740}.gauge.gnt .gs{color:#ffd740}
+.gauge.gbl .gv{color:#42a5f5}.gauge.gbl .gs{color:#42a5f5}
+
+/* SECTIONS */
+.stl{font-size:.82em;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;color:#4CAF50;margin:22px 0 12px;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:1px solid #162a20}
+
+/* CHART */
+.chc{background:#131e2c;border:1px solid #1e2e3e;border-radius:12px;padding:16px;margin-bottom:14px}
+.chc h4{font-size:.76em;color:#69f0ae;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700;text-align:center}
+.chc canvas{max-height:280px}
+.chg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* SEMÁFORO */
+.sem-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.sem{border-radius:12px;padding:14px 8px;text-align:center;border:2px solid;position:relative;overflow:hidden}
+.sem::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px}
+.sem .sl{font-size:.6em;color:#78909c;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}
+.sem .sv{font-size:1.15em;font-weight:900}
+.sem .ss{font-size:.68em;font-weight:700;margin-top:3px}
+.sem .sico{font-size:1.4em;margin-bottom:4px}
+.sem-g{border-color:#2e7d32;background:rgba(76,175,80,.05)}.sem-g::after{background:#4CAF50}.sem-g .sv{color:#69f0ae}.sem-g .ss{color:#4CAF50}
+.sem-r{border-color:#c62828;background:rgba(239,83,80,.04)}.sem-r::after{background:#ef5350}.sem-r .sv{color:#ef5350}.sem-r .ss{color:#ef5350}
+.sem-y{border-color:#e65100;background:rgba(255,167,38,.04)}.sem-y::after{background:#ffa726}.sem-y .sv{color:#ffd740}.sem-y .ss{color:#ffa726}
+.sem-b{border-color:#1565c0;background:rgba(66,165,245,.04)}.sem-b::after{background:#42a5f5}.sem-b .sv{color:#42a5f5}.sem-b .ss{color:#42a5f5}
+
+/* TABELA */
+.tb{width:100%;border-collapse:collapse;font-size:.8em;margin-bottom:16px;border-radius:10px;overflow:hidden}
+.tb th{background:#0e1825;color:#78909c;padding:9px 10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:.7em;text-align:left;border-bottom:2px solid #1e2e3e}
+.tb th:not(:first-child){text-align:right}
+.tb td{padding:7px 10px;border-bottom:1px solid #141f2e;font-weight:500}
+.tb td:not(:first-child){text-align:right}
+.tb tr:hover{background:rgba(76,175,80,.02)}
+.tb .pn{color:#e5e7eb;font-weight:600}
+
+/* ANALYSIS */
+.anl{border-radius:12px;padding:18px 20px;margin-bottom:14px;border-left:4px solid;background:linear-gradient(90deg,rgba(0,0,0,.2),transparent)}
+.anl h4{font-size:.78em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:800}
+.anl p{font-size:.84em;line-height:1.8;color:#b0bec5}
+.anl .hl{color:#ffd740;font-weight:700}.anl .ps{color:#69f0ae;font-weight:700}.anl .ng{color:#ef5350;font-weight:700}.anl .bl{color:#42a5f5;font-weight:700}
+.anl-g{border-color:#4CAF50}.anl-g h4{color:#69f0ae}
+.anl-r{border-color:#ef5350}.anl-r h4{color:#ef5350}
+.anl-y{border-color:#ffa726}.anl-y h4{color:#ffd740}
+.anl-b{border-color:#42a5f5}.anl-b h4{color:#42a5f5}
+.anl-w{border-color:#fff}.anl-w h4{color:#fff}
+
+/* TERMÔMETRO */
+.thermo{background:#131e2c;border-radius:14px;padding:20px;border:1px solid #1e2e3e;margin-bottom:16px}
+.thermo h4{text-align:center;font-size:.78em;color:#69f0ae;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:16px}
+.th-bar{height:22px;background:linear-gradient(90deg,#b71c1c 0%,#ef5350 20%,#ff9800 35%,#ffd740 50%,#8bc34a 65%,#4CAF50 80%,#1b5e20 100%);border-radius:11px;position:relative;margin:30px 10px 14px}
+.th-mk{position:absolute;top:-26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:left .4s}
+.th-mk .arr{width:3px;height:46px;border-radius:2px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.4)}
+.th-mk .lbl{font-size:.68em;font-weight:800;padding:4px 10px;border-radius:6px;white-space:nowrap;margin-top:4px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.th-labels{display:flex;justify-content:space-between;padding:0 10px;font-size:.65em;color:#546e7a;font-weight:700}
+
+/* ALERTAS */
+.alrt{border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;border:1px solid}
+.alrt .ai{font-size:1.4em;flex-shrink:0}
+.alrt h5{font-size:.74em;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px}
+.alrt p{font-size:.8em;line-height:1.65}
+.al-w{border-color:#e65100;background:rgba(255,152,0,.04)}.al-w h5{color:#ffa726}.al-w p{color:#ffe0b2}
+.al-g{border-color:#2e7d32;background:rgba(76,175,80,.04)}.al-g h5{color:#69f0ae}.al-g p{color:#c8e6c9}
+.al-d{border-color:#c62828;background:rgba(239,83,80,.04)}.al-d h5{color:#ef5350}.al-d p{color:#ef9a9a}
+.al-b{border-color:#1565c0;background:rgba(66,165,245,.04)}.al-b h5{color:#42a5f5}.al-b p{color:#bbdefb}
+
+/* CENÁRIOS */
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.sc{border-radius:12px;padding:16px;border:2px solid}
+.sc h4{font-size:.76em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:800}
+.sc p{font-size:.8em;line-height:1.7}
+.sc ul{font-size:.78em;line-height:1.8;padding-left:16px;margin-top:6px}
+.sc-g{background:rgba(76,175,80,.04);border-color:#2e7d32}.sc-g h4{color:#69f0ae}.sc-g p,.sc-g li{color:#a5d6a7}
+.sc-r{background:rgba(239,83,80,.03);border-color:#c62828}.sc-r h4{color:#ef5350}.sc-r p,.sc-r li{color:#ef9a9a}
+
+/* PROJEÇÃO */
+.proj-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.proj{background:#131e2c;border-radius:12px;padding:18px;text-align:center;border:1px solid #1e2e3e;position:relative;overflow:hidden}
+.proj::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.proj.pup::before{background:linear-gradient(90deg,#2e7d32,#69f0ae)}
+.proj.pnt::before{background:linear-gradient(90deg,#e65100,#ffd740)}
+.proj .pd{font-size:.68em;color:#78909c;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.proj .pv{font-size:1.7em;font-weight:900;margin:8px 0 4px}
+.proj .pr{font-size:.72em;color:#546e7a;font-weight:600}
+.proj .pvs{font-size:.78em;font-weight:700;padding:5px 16px;border-radius:22px;display:inline-block;margin-top:8px}
+.proj.pup .pv{color:#69f0ae}.proj.pup .pvs{background:rgba(76,175,80,.12);color:#69f0ae}
+.proj.pnt .pv{color:#ffd740}.proj.pnt .pvs{background:rgba(255,215,64,.12);color:#ffd740}
+
+/* CREDENCIAL */
+.cred{background:linear-gradient(135deg,#0d1f0d,#162a1a);border:2px solid #2e7d32;border-radius:16px;padding:24px;margin-top:22px;box-shadow:0 0 30px rgba(76,175,80,.06)}
+.cred-in{display:flex;gap:20px;align-items:center}
+.cred-av{width:72px;height:72px;background:linear-gradient(135deg,#388e3c,#1b5e20);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.9em;flex-shrink:0;box-shadow:0 4px 20px rgba(76,175,80,.3);position:relative}
+.cred-av::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(105,240,174,.3)}
+.cred h3{font-size:1em;font-weight:900;color:#fff}
+.cred .ti{font-size:.76em;color:#69f0ae;font-weight:700;margin-top:2px}
+.cred .ds{font-size:.72em;color:#81c784;margin-top:5px;line-height:1.5;font-style:italic}
+.cred .ct{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.cred .ct a,.cred .ct span{font-size:.7em;color:#a5d6a7;text-decoration:none;display:flex;align-items:center;gap:4px;font-weight:600;padding:4px 10px;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid rgba(76,175,80,.15)}
+.cred .ct a:hover{background:rgba(76,175,80,.1);color:#fff}
+.disc{margin-top:16px;padding:14px;background:rgba(255,255,255,.02);border-radius:10px;font-size:.66em;color:#37474f;line-height:1.6;text-align:center;border:1px solid rgba(255,255,255,.03)}
+
+.ftr{text-align:center;padding:14px;font-size:.68em;color:#263238;border-radius:0 0 14px 14px;background:#060b14}
+
+@media(max-width:768px){
+    .topbar{flex-direction:column;text-align:center;gap:8px}.topbar .ed{text-align:center}
+    .hdr h1{font-size:1.1em}.flash{grid-template-columns:1fr;text-align:center}
+    .gauge-row{grid-template-columns:repeat(3,1fr)}
+    .sem-row{grid-template-columns:repeat(3,1fr)}
+    .chg,.sc-grid,.proj-g{grid-template-columns:1fr}
+    .cred-in{flex-direction:column;text-align:center}.cred .ct{justify-content:center}
+}
+@media(max-width:420px){.gauge-row,.sem-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="pg">
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="logo">
+        <div class="logo-ic">🐂</div>
+        <div class="logo-txt"><h2>RURAL IN</h2><small>Inteligência para o Agronegócio</small></div>
+    </div>
+    <div class="ed"><div class="dt">Quarta, 25 de Março de 2026</div><div class="inf">Radar Agro Boi · Edição Diária · Fechamento do Mercado</div></div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+    <h1>🐂 Radar Agro — Boi Gordo</h1>
+    <div class="sub">Fechamento 25/03/2026 · Análise Fundamentalista & Técnica · Cenários & Projeções</div>
+    <div class="pills">
+        <span class="pill pill-g">CEPEA R$ 354,65/@ ▲ +0,92%</span>
+        <span class="pill pill-g">B3 ABR R$ 366,10 ▲ +1,06%</span>
+        <span class="pill pill-g">6ª ALTA SEGUIDA</span>
+        <span class="pill pill-b">BOI-CHINA R$ 353/@</span>
+        <span class="pill pill-y">BRENT US$ 98,78</span>
+    </div>
+</div>
+
+<div class="mn">
+
+<!-- FLASH -->
+<div class="flash">
+    <div class="emo">🚀</div>
+    <div class="txt">
+        <h3>Arroba Acelera — Maior Alta Diária do Mês</h3>
+        <p>O indicador CEPEA/Esalq fechou <strong>25/03/2026</strong> cotado a <strong>R$ 354,65/@</strong>, avanço de <strong>+0,92%</strong> — a maior variação diária positiva de março e <strong>6ª sessão consecutiva de alta</strong>. O acumulado do mês virou positivo pela primeira vez: <strong>+0,42%</strong>. Na B3, o contrato de abril/26 disparou para <strong>R$ 366,10/@</strong> (+1,06%), renovando máxima. O "boi-China" rompeu a barreira de R$ 350/@ em SP, alcançando <strong>R$ 353/@</strong> (Scot Consultoria).</p>
+    </div>
+    <div class="big">
+        <div class="num">354,65</div>
+        <div class="var">▲ +0,92%</div>
+        <div class="lbl">R$/@ · CEPEA 25/03</div>
+    </div>
+</div>
+
+<!-- PAINEL RÁPIDO -->
+<div class="gauge-row">
+    <div class="gauge gup"><div class="gl">CEPEA à Vista</div><div class="gv">R$ 354,65</div><div class="gs">▲ +0,92%</div></div>
+    <div class="gauge gup"><div class="gl">CEPEA Prazo</div><div class="gv">R$ 358,91</div><div class="gs">▲ +0,92%</div></div>
+    <div class="gauge gup"><div class="gl">B3 Mar/26</div><div class="gv">R$ 354,70</div><div class="gs">▲ +0,20%</div></div>
+    <div class="gauge gup"><div class="gl">B3 Abr/26</div><div class="gv">R$ 366,10</div><div class="gs">▲ +1,06%</div></div>
+    <div class="gauge gup"><div class="gl">B3 Mai/26</div><div class="gv">R$ 360,65</div><div class="gs">▲ +0,46%</div></div>
+    <div class="gauge gup"><div class="gl">B3 Jun/26</div><div class="gv">R$ 352,50</div><div class="gs">▲ +0,09%</div></div>
+    <div class="gauge gup"><div class="gl">B3 Jul/26</div><div class="gv">R$ 351,00</div><div class="gs">▲ +0,56%</div></div>
+    <div class="gauge gbl"><div class="gl">Bezerro MS</div><div class="gv">R$ 3.279</div><div class="gs">▲ +0,06%</div></div>
+    <div class="gauge gnt"><div class="gl">Dólar Ptax</div><div class="gv">R$ 5,238</div><div class="gs">≈ +0,07%</div></div>
+    <div class="gauge gbl"><div class="gl">US$/Arroba</div><div class="gv">US$ 67,93</div><div class="gs">▲ +1,63%</div></div>
+    <div class="gauge gnt"><div class="gl">Brent Oil</div><div class="gv">US$ 98,78</div><div class="gs">▲ +2,36%</div></div>
+    <div class="gauge gup"><div class="gl">Ibovespa</div><div class="gv">185.424</div><div class="gs">▲ +1,60%</div></div>
+</div>
+
+<!-- SEMÁFORO DA SEMANA -->
+<h3 class="stl">🚦 Semáforo da Semana — Evolução CEPEA</h3>
+<div class="sem-row">
+    <div class="sem sem-g"><div class="sico">🟢</div><div class="sl">Seg 23/03</div><div class="sv">R$ 350,70</div><div class="ss">+0,01%</div></div>
+    <div class="sem sem-g"><div class="sico">🟢</div><div class="sl">Ter 24/03</div><div class="sv">R$ 351,40</div><div class="ss">+0,20%</div></div>
+    <div class="sem sem-g"><div class="sico">🟢🔥</div><div class="sl">Qua 25/03</div><div class="sv">R$ 354,65</div><div class="ss">+0,92%</div></div>
+    <div class="sem sem-b"><div class="sico">📊</div><div class="sl">Qui 26/03</div><div class="sv">—</div><div class="ss">Projeção</div></div>
+    <div class="sem sem-b"><div class="sico">📊</div><div class="sl">Sex 27/03</div><div class="sv">—</div><div class="ss">Projeção</div></div>
+</div>
+
+<!-- GRÁFICOS -->
+<h3 class="stl">📈 Evolução do Indicador CEPEA — Março 2026</h3>
+<div class="chc"><h4>Indicador CEPEA/Esalq — Boi Gordo (R$/@) · Março 2026</h4><canvas id="ch1"></canvas></div>
+
+<h3 class="stl">📊 Curva de Futuros B3 · Fechamento 25/03</h3>
+<div class="chg">
+    <div class="chc"><h4>Curva B3 (R$/@) — Contango → Backwardation</h4><canvas id="ch2"></canvas></div>
+    <div class="chc"><h4>Variação Diária Futuros B3 (%)</h4><canvas id="ch3"></canvas></div>
+</div>
+
+<!-- TABELA FUTUROS -->
+<table class="tb">
+<thead><tr><th>Contrato</th><th>Fech. 25/03</th><th>Fech. 24/03</th><th>Var. Dia</th><th>Var. Semana</th><th>Sinal</th></tr></thead>
+<tbody>
+<tr><td class="pn">📌 Mar/26</td><td>R$ 354,70</td><td>R$ 354,00</td><td style="color:#69f0ae">+0,20%</td><td style="color:#69f0ae">+0,35%</td><td>🟢</td></tr>
+<tr><td class="pn">Abr/26</td><td style="color:#69f0ae;font-weight:800">R$ 366,10</td><td>R$ 362,25</td><td style="color:#69f0ae">+1,06%</td><td style="color:#69f0ae">+3,14%</td><td>🟢🔥</td></tr>
+<tr><td class="pn">Mai/26</td><td>R$ 360,65</td><td>R$ 359,00</td><td style="color:#69f0ae">+0,46%</td><td style="color:#69f0ae">+2,20%</td><td>🟢</td></tr>
+<tr><td class="pn">Jun/26</td><td>R$ 352,50</td><td>R$ 352,20</td><td style="color:#69f0ae">+0,09%</td><td style="color:#ffd740">+0,17%</td><td>⚪</td></tr>
+<tr><td class="pn">Jul/26</td><td>R$ 351,00</td><td>R$ 349,05</td><td style="color:#69f0ae">+0,56%</td><td style="color:#69f0ae">+0,83%</td><td>🟢</td></tr>
+<tr><td class="pn">Ago/26</td><td>R$ 348,00</td><td>R$ 347,45</td><td style="color:#69f0ae">+0,16%</td><td style="color:#ffd740">-0,29%</td><td>⚪</td></tr>
+<tr><td class="pn">Set/26</td><td>R$ 348,15</td><td>R$ 347,55</td><td style="color:#69f0ae">+0,17%</td><td style="color:#69f0ae">+0,47%</td><td>⚪</td></tr>
+</tbody>
+</table>
+
+<!-- PRAÇAS -->
+<h3 class="stl">📍 Mercado Físico — Praças Regionais (Scot · 25/03)</h3>
+<div class="chc"><h4>Comparativo Praças — Boi Gordo à Vista (R$/@)</h4><canvas id="ch4"></canvas></div>
+<table class="tb">
+<thead><tr><th>Praça</th><th>Boi à Vista</th><th>Boi Prazo</th><th>Vaca Gorda</th><th>Boi-China</th></tr></thead>
+<tbody>
+<tr><td class="pn">SP Barretos</td><td>R$ 346,50</td><td>R$ 350,00</td><td>R$ 319,00</td><td style="color:#42a5f5;font-weight:700">R$ 353,00</td></tr>
+<tr><td class="pn">SP Araçatuba</td><td>R$ 346,50</td><td>R$ 350,00</td><td>R$ 319,00</td><td style="color:#42a5f5;font-weight:700">R$ 353,00</td></tr>
+<tr><td class="pn">GO Goiânia</td><td>R$ 326,50</td><td>R$ 330,00</td><td>R$ 307,00</td><td>—</td></tr>
+<tr><td class="pn">GO Sul (Rio Verde)</td><td>R$ 322,00</td><td>R$ 325,00</td><td>R$ 308,00</td><td>—</td></tr>
+<tr><td class="pn">MG Triângulo</td><td>R$ 328,50</td><td>R$ 332,00</td><td>R$ 302,00</td><td>—</td></tr>
+<tr><td class="pn">MS C. Grande</td><td>R$ 333,50</td><td>R$ 337,00</td><td>R$ 312,00</td><td>—</td></tr>
+<tr><td class="pn">MS Dourados</td><td>R$ 333,50</td><td>R$ 337,00</td><td>R$ 312,00</td><td>—</td></tr>
+<tr><td class="pn">MT Cuiabá</td><td>R$ 318,00</td><td>R$ 321,00</td><td>R$ 297,00</td><td>—</td></tr>
+<tr><td class="pn">TO Palmas</td><td>R$ 308,00</td><td>R$ 311,00</td><td>R$ 284,00</td><td>—</td></tr>
+<tr><td class="pn">BA Sul</td><td>R$ 314,00</td><td>R$ 317,00</td><td>R$ 290,00</td><td>—</td></tr>
+<tr><td class="pn">RO Vilhena</td><td>R$ 285,00</td><td>R$ 288,00</td><td>R$ 264,00</td><td>—</td></tr>
+</tbody>
+</table>
+
+<!-- ANÁLISE -->
+<h3 class="stl">🔍 Análise Fundamentalista</h3>
+
+<div class="anl anl-g">
+    <h4>📈 Oferta — Escalas de 6 Dias e Pecuarista com Força nas Negociações</h4>
+    <p>O principal pilar da alta de hoje é a <span class="ps">oferta enxuta de animais terminados</span>. Os frigoríficos operam com escalas de abate de apenas <span class="hl">6 dias úteis na média nacional</span> (MT caiu para 5 dias), patamar considerado curto e que mantém a indústria na defensiva. A Scot Consultoria destaca que <span class="ps">"a ponta vendedora não tem aceitado negociar abaixo da referência"</span>, forçando os frigoríficos a ceder. O bezerro em MS renovou recorde a <span class="hl">R$ 3.278,85/cabeça</span> (+0,06%), reforçando o aperto na reposição. A relação boi/bezerro exige atenção: com ágio do bezerro acima de 35%, a retenção de matrizes segue intensa.</p>
+</div>
+<div class="anl anl-b">
+    <h4>🌍 Exportações — Brasil Domina 60% da Demanda Chinesa</h4>
+    <p>Exportações de março acumulam ritmo de <span class="bl">12,5 mil t/dia</span> — <span class="ps">+51% acima de março/25</span>. Foram embarcadas <span class="hl">163,3 mil toneladas</span> até a 3ª semana, quase igualando o mês inteiro de março/25 (166,3 mil t). Brasil respondeu por <span class="bl">59,93% das importações chinesas</span> em fev/26 (160,78 mil t). Destaque: "boi-China" rompeu R$ 350/@ em SP, cotado a <span class="hl">R$ 353/@</span> — ágio de R$ 3/@ sobre o boi comum. Novos mercados se abrem: <span class="ps">Guatemala já habilitada</span> para embarques; Japão e Coreia do Sul em avaliação para 2026.</p>
+</div>
+<div class="anl anl-y">
+    <h4>⚠️ Atenção ao 2º Trimestre — Agrifatto Alerta sobre Virada Sazonal</h4>
+    <p>A Agrifatto projeta que o cenário de preços firmes <span class="ng">pode mudar a partir do 2º trimestre</span>. Com a <span class="hl">redução das chuvas e deterioração das pastagens</span>, a tendência é de menor retenção e aumento da oferta. A curva de futuros da B3 já precifica isso: enquanto abril/26 opera a <span class="ps">R$ 366,10</span> (prêmio de R$ 11,40 sobre março), os contratos de jul-set operam entre <span class="ng">R$ 348-351</span> — típico de cenário de safra com maior oferta de confinamento.</p>
+</div>
+
+<!-- ANÁLISE TÉCNICA -->
+<h3 class="stl">📐 Análise Técnica (Gráfica)</h3>
+
+<div class="anl anl-w">
+    <h4>📊 Leitura do Preço — CEPEA & B3</h4>
+    <p><strong>CEPEA (Físico):</strong> O indicador construiu <span class="ps">fundo duplo em R$ 346,05-346,45</span> (06 e 16/03) e desde então acumula <span class="ps">6 altas consecutivas</span>, rompendo com força a barreira psicológica de R$ 350,00 e agora testando a <span class="hl">zona de resistência entre R$ 354-356</span> (topo de fevereiro). A alta de +0,92% hoje foi um <span class="ps">breakout com volume</span> — aceleração típica de rompimento. Suporte imediato em <span class="hl">R$ 351,40</span> (fechamento de ontem). Se o CEPEA fechar acima de R$ 355, abre caminho para buscar <span class="ps">R$ 358-360</span>.</p>
+    <p style="margin-top:10px"><strong>B3 (Futuros):</strong> Abril/26 é o contrato destaque: <span class="ps">saltou de R$ 344,90 em 17/03 para R$ 366,10 hoje</span> — valorização de <span class="hl">+6,15% em 7 pregões</span>. Spread abril-março atingiu <span class="hl">R$ 11,40/@</span>, historicamente elevado e indicando que o mercado precifica forte escassez no curto prazo. A curva mostra <span class="bl">contango agressivo Mar→Abr</span>, depois inverte para <span class="ng">backwardation de Abr→Set</span>.</p>
+</div>
+
+<!-- TERMÔMETROS -->
+<h3 class="stl">🌡️ Termômetros de Análise</h3>
+
+<div class="thermo">
+    <h4>🌡️ Viés do Mercado — Próximos 2 Dias</h4>
+    <div class="th-bar">
+        <div class="th-mk" style="left:72%"><div class="arr"></div><div class="lbl" style="background:#69f0ae;color:#000">📈 ALTA MODERADA</div></div>
+    </div>
+    <div class="th-labels"><span>🔴 Forte Baixa</span><span>🟡 Neutro</span><span>🟢 Forte Alta</span></div>
+</div>
+
+<div class="chg">
+    <div class="thermo">
+        <h4>📦 Pressão de Oferta (Escalas)</h4>
+        <div class="th-bar">
+            <div class="th-mk" style="left:28%"><div class="arr"></div><div class="lbl" style="background:#ef5350;color:#fff">OFERTA CURTA (6d)</div></div>
+        </div>
+        <div class="th-labels"><span>Muito Curta</span><span>Normal (8-9d)</span><span>Folgada</span></div>
+    </div>
+    <div class="thermo">
+        <h4>🌍 Força da Exportação</h4>
+        <div class="th-bar">
+            <div class="th-mk" style="left:78%"><div class="arr"></div><div class="lbl" style="background:#69f0ae;color:#000">RECORDE (+51%)</div></div>
+        </div>
+        <div class="th-labels"><span>Fraca</span><span>Normal</span><span>Recorde</span></div>
+    </div>
+</div>
+<div class="chg">
+    <div class="thermo">
+        <h4>💰 Margem do Pecuarista</h4>
+        <div class="th-bar">
+            <div class="th-mk" style="left:62%"><div class="arr"></div><div class="lbl" style="background:#8bc34a;color:#000">POSITIVA</div></div>
+        </div>
+        <div class="th-labels"><span>Negativa</span><span>Apertada</span><span>Confortável</span></div>
+    </div>
+    <div class="thermo">
+        <h4>⚡ Volatilidade B3</h4>
+        <div class="th-bar">
+            <div class="th-mk" style="left:65%"><div class="arr"></div><div class="lbl" style="background:#ffa726;color:#000">ELEVADA</div></div>
+        </div>
+        <div class="th-labels"><span>Baixa</span><span>Moderada</span><span>Extrema</span></div>
+    </div>
+</div>
+
+<!-- CENÁRIOS -->
+<h3 class="stl">🎯 Cenários para Quinta (26/03) e Sexta (27/03)</h3>
+<div class="sc-grid">
+    <div class="sc sc-g">
+        <h4>🟢 Cenário Altista (65% probabilidade)</h4>
+        <p>📌 <strong>CEPEA:</strong> R$ 355 – R$ 358/@<br>📌 <strong>B3 Abr:</strong> R$ 365 – R$ 370/@</p>
+        <ul>
+            <li>Escalas seguem em 5-6 dias sem sinais de alongamento</li>
+            <li>Boi-China a R$ 353/@ atraindo mais pecuaristas</li>
+            <li>Exportações acelerando no fechamento de março</li>
+            <li>Rompimento da resistência de R$ 354 valida alvo em R$ 358</li>
+            <li>Acordo Mercosul-UE (maio) gera otimismo antecipado</li>
+            <li>Novos mercados: Guatemala, Japão, Coreia do Sul no radar</li>
+        </ul>
+    </div>
+    <div class="sc sc-r">
+        <h4>🔴 Cenário Baixista (35% probabilidade)</h4>
+        <p>📌 <strong>CEPEA:</strong> R$ 351 – R$ 353/@<br>📌 <strong>B3 Abr:</strong> R$ 360 – R$ 363/@</p>
+        <ul>
+            <li>Realização de lucros após 6 altas e +6% nos futuros</li>
+            <li>Spread abril-março a R$ 11,40 pode atrair vendedores</li>
+            <li>Brent a US$ 98,78 pressiona diesel e custo de frete</li>
+            <li>Final de mês: compromissos financeiros podem liberar lotes</li>
+            <li>Mudança na contabilização de cotas da China</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PROJEÇÃO -->
+<h3 class="stl">📅 Projeção de Preço — Próximos 2 Dias</h3>
+<div class="proj-g">
+    <div class="proj pup"><div class="pd">Quinta-feira · 26/03/2026</div><div class="pv">R$ 355 – 357</div><div class="pr">Indicador CEPEA/Esalq (R$/@)</div><div class="pvs">▲ VIÉS ALTISTA</div></div>
+    <div class="proj pup"><div class="pd">Sexta-feira · 27/03/2026</div><div class="pv">R$ 355 – 358</div><div class="pr">Indicador CEPEA/Esalq (R$/@)</div><div class="pvs">▲ ALTA → ESTABILIZAÇÃO</div></div>
+</div>
+
+<div class="anl anl-g">
+    <h4>🧠 Racional da Projeção</h4>
+    <p>O viés altista para os próximos 2 dias se baseia em: (1) <span class="ps">momentum forte</span> — 6ª alta consecutiva com aceleração (+0,92%); (2) <span class="hl">rompimento técnico de R$ 354</span> com volume; (3) escalas de <span class="hl">5-6 dias</span> sem sinais de recomposição; (4) boi-China a R$ 353/@ <span class="ps">validando demanda premium</span>; (5) exportações em ritmo recorde; (6) bezerro em máxima histórica sustentando retenção. A ressalva é a possibilidade de <span class="ng">realização técnica</span> pontual nos futuros (Abr/26 subiu +6,15% em 7 pregões), mas os fundamentos de oferta curta devem manter o piso elevado no físico.</p>
+</div>
+
+<!-- GRÁFICOS EXTRAS -->
+<h3 class="stl">📊 Painéis Visuais Complementares</h3>
+<div class="chg">
+    <div class="chc"><h4>📊 Variação Acumulada na Semana — B3 (%)</h4><canvas id="ch5"></canvas></div>
+    <div class="chc"><h4>📐 Spread B3: Abril/26 vs Demais Vencimentos (R$)</h4><canvas id="ch6"></canvas></div>
+</div>
+<div class="chc"><h4>📈 Rally de Março — CEPEA do Fundo (R$ 346,05) ao Topo (R$ 354,65)</h4><canvas id="ch7"></canvas></div>
+
+<!-- MACRO -->
+<h3 class="stl">🌐 Fatores Macro & Geopolíticos no Radar</h3>
+
+<div class="alrt al-g"><div class="ai">🇧🇷🇨🇳</div><div><h5>Brasil Ganha Espaço na China — 60% do Market Share</h5><p>Com a suspensão de 300 plantas americanas e cotas sobre demais fornecedores, o Brasil atingiu 60% das importações chinesas em fev/26. Argentina (-) e Austrália (-) perdem espaço. Ritmo se mantém firme em março.</p></div></div>
+<div class="alrt al-w"><div class="ai">🇨🇳</div><div><h5>Cotas Chinesas — 1,106 Mi Ton + Sobretaxa de 55%</h5><p>Risco estrutural de médio prazo. O mercado futuro parece ter absorvido o impacto — mas mudanças na contabilização da cota podem gerar volatilidade a qualquer momento. Frigoríficos anteciparam embarques no 1T.</p></div></div>
+<div class="alrt al-g"><div class="ai">🇪🇺</div><div><h5>Mercosul-UE — Entrada Provisória em Maio/26</h5><p>Acordo comercial com cota de carne bovina com tarifa reduzida abre novo canal de escoamento premium. Fator positivo de médio prazo para diversificação de destinos.</p></div></div>
+<div class="alrt al-b"><div class="ai">🌍</div><div><h5>Novos Mercados — Guatemala, Japão, Coreia do Sul</h5><p>Guatemala já habilitada para receber carne brasileira. Japão em avaliação — pode abrir em 2026. Coreia do Sul na fila. Demanda nova entrando no sistema com oferta limitada = pressão altista.</p></div></div>
+<div class="alrt al-w"><div class="ai">⛽</div><div><h5>Petróleo Brent US$ 98,78 (+2,36%) — Diesel Sob Pressão</h5><p>Brent se aproxima de US$ 100, pressionando custo de frete e logística da boiada. Tensões no Oriente Médio no radar. Impacto direto no custo de transporte de gado e insumos da pecuária.</p></div></div>
+<div class="alrt al-w"><div class="ai">💹</div><div><h5>Ibovespa 185.424 (+1,60%) · Dólar R$ 5,238</h5><p>Bolsa em forte alta acompanhando exterior. Câmbio estável beneficia competitividade da carne. Selic elevada encarece confinamento — monitorar decisão do Copom.</p></div></div>
+
+<!-- CREDENCIAL -->
+<div class="cred">
+    <div class="cred-in">
+        <div class="cred-av">👨‍💼</div>
+        <div>
+            <h3>Dr. Sidney Souza</h3>
+            <div class="ti">Economista Agrícola · Estrategista Econômico do Produtor</div>
+            <div class="ds">Especialista em economia da fazenda e gestão de risco no agro<br>
+            Transformamos dados da fazenda em decisões econômicas<br>
+            Ajudamos produtores a entender se o mercado sustenta seu negócio</div>
+            <div class="ct">
+                <a href="mailto:sidneyagro@gmail.com">📧 sidneyagro@gmail.com</a>
+                <a href="https://wa.me/5564992266886">📱 (64) 9 9226-6886</a>
+                <span>📸 @ruralin.ai</span>
+                <span>📸 @sidneyagrosa</span>
+            </div>
+        </div>
+    </div>
+    <div class="disc">⚠️ <strong>Disclaimer:</strong> Material exclusivamente informativo e educacional. Não constitui recomendação de compra, venda ou retenção. Análises refletem interpretação com base em dados públicos. Decisões são de responsabilidade do produtor. Fontes: CEPEA/Esalq, B3, Scot Consultoria, SECEX/MDIC, Agrifatto, Farmnews, Portal DBO, BeefPoint, CONAB.</div>
+</div>
+
+</div>
+<div class="ftr">RURAL IN © 2026 · Inteligência para o Agronegócio · Dr. Sidney Souza · Rio Verde/GO 🇧🇷</div>
+</div>
+
+<script>
+Chart.defaults.color='#78909c';Chart.defaults.font.family='Inter';Chart.defaults.font.size=11;
+const df={family:'Inter',weight:'600'};
+const tt={backgroundColor:'#131e2c',titleColor:'#69f0ae',bodyColor:'#e5e7eb',borderColor:'#2e7d32',borderWidth:1,padding:12,cornerRadius:8};
+
+// 1. CEPEA MARÇO
+const d1=['04/03','05/03','06/03','09/03','10/03','11/03','12/03','13/03','16/03','17/03','18/03','19/03','20/03','23/03','24/03','25/03'];
+const v1=[348.65,347.30,346.05,347.40,346.80,347.25,347.50,346.60,346.45,347.70,348.85,349.60,350.65,350.70,351.40,354.65];
+new Chart(document.getElementById('ch1'),{type:'line',data:{labels:d1,datasets:[{label:'R$/@',data:v1,borderColor:'#69f0ae',backgroundColor:'rgba(105,240,174,.06)',borderWidth:3,fill:true,tension:.3,pointRadius:v1.map((_,i)=>i===v1.length-1?8:i===2?6:3),pointBackgroundColor:v1.map((_,i)=>i===v1.length-1?'#ffd740':i===2?'#ef5350':'#69f0ae'),pointBorderColor:v1.map((_,i)=>i===v1.length-1?'#ffd740':i===2?'#ef5350':'#69f0ae')}]},
+options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>'R$ '+c.parsed.y.toFixed(2)}},annotation:{annotations:{
+fundo:{type:'line',yMin:346.05,yMax:346.05,borderColor:'#ef5350',borderWidth:1.5,borderDash:[6,4],label:{display:true,content:'Fundo R$ 346,05',position:'start',backgroundColor:'#ef5350',color:'#fff',font:{size:9,weight:'bold'},padding:3}},
+resist:{type:'line',yMin:356,yMax:356,borderColor:'#42a5f5',borderWidth:1.5,borderDash:[6,4],label:{display:true,content:'Resist. R$ 356 (topo fev)',position:'end',backgroundColor:'#42a5f5',color:'#fff',font:{size:9,weight:'bold'},padding:3}},
+psico:{type:'line',yMin:350,yMax:350,borderColor:'rgba(255,215,64,.4)',borderWidth:1,borderDash:[4,4],label:{display:true,content:'R$ 350',position:'start',backgroundColor:'rgba(255,215,64,.7)',color:'#000',font:{size:8,weight:'bold'},padding:2}},
+hoje:{type:'point',xValue:15,yValue:354.65,backgroundColor:'#ffd740',borderColor:'#ffd740',radius:0,label:{display:true,content:'HOJE R$ 354,65',position:'start',backgroundColor:'#ffd740',color:'#000',font:{size:10,weight:'bold'},padding:4}}
+}}},scales:{y:{min:344,max:358,grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>'R$ '+v,font:df}},x:{grid:{display:false},ticks:{font:df,maxRotation:45}}}}});
+
+// 2. CURVA FUTUROS
+const fm=['Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26'];
+const fv=[354.70,366.10,360.65,352.50,351.00,348.00,348.15];
+const fc=fv.map(v=>v>=360?'rgba(105,240,174,.6)':v>=352?'rgba(255,215,64,.5)':'rgba(239,83,80,.4)');
+const fb=fv.map(v=>v>=360?'#69f0ae':v>=352?'#ffd740':'#ef5350');
+new Chart(document.getElementById('ch2'),{type:'bar',data:{labels:fm,datasets:[{data:fv,backgroundColor:fc,borderColor:fb,borderWidth:2,borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>'R$ '+c.parsed.y.toFixed(2)}},annotation:{annotations:{cepea:{type:'line',yMin:354.65,yMax:354.65,borderColor:'#fff',borderWidth:1.5,borderDash:[5,4],label:{display:true,content:'CEPEA 354,65',position:'end',backgroundColor:'rgba(255,255,255,.85)',color:'#000',font:{size:9,weight:'bold'},padding:3}}}}},scales:{y:{min:342,max:372,grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>'R$ '+v,font:df}},x:{grid:{display:false},ticks:{font:df}}}}});
+
+// 3. VAR FUTUROS
+const vf=[0.20,1.06,0.46,0.09,0.56,0.16,0.17];
+new Chart(document.getElementById('ch3'),{type:'bar',data:{labels:fm,datasets:[{data:vf,backgroundColor:vf.map(v=>v>=0.5?'rgba(105,240,174,.6)':v>=0?'rgba(105,240,174,.3)':'rgba(239,83,80,.5)'),borderColor:vf.map(v=>v>=0?'#69f0ae':'#ef5350'),borderWidth:2,borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>c.parsed.x.toFixed(2)+'%'}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%',font:df}},y:{grid:{display:false},ticks:{font:{...df,size:10}}}}}});
+
+// 4. PRAÇAS
+const pn=['SP Barretos','SP Araçat.','GO Goiânia','GO Sul/RV','MG Triâng.','MS C.Grande','MS Dourad.','MT Cuiabá','TO Palmas','BA Sul','RO Vilhena'];
+const pv=[346.5,346.5,326.5,322,328.5,333.5,333.5,318,308,314,285];
+const pc=pv.map(v=>v>=345?'rgba(105,240,174,.5)':v>=330?'rgba(66,165,245,.4)':v>=310?'rgba(255,215,64,.4)':'rgba(239,83,80,.4)');
+const pb2=pv.map(v=>v>=345?'#69f0ae':v>=330?'#42a5f5':v>=310?'#ffd740':'#ef5350');
+new Chart(document.getElementById('ch4'),{type:'bar',data:{labels:pn,datasets:[{data:pv,backgroundColor:pc,borderColor:pb2,borderWidth:2,borderRadius:5}]},
+options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>'R$ '+c.parsed.x.toFixed(2)+'/@'}},annotation:{annotations:{cepea:{type:'line',xMin:354.65,xMax:354.65,borderColor:'#fff',borderWidth:1.5,borderDash:[5,4],label:{display:true,content:'CEPEA 354,65',position:'start',backgroundColor:'rgba(255,255,255,.85)',color:'#000',font:{size:8,weight:'bold'},padding:2}}}}},scales:{x:{min:270,max:370,grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>'R$ '+v,font:df}},y:{grid:{display:false},ticks:{font:{...df,size:10}}}}}});
+
+// 5. VAR SEMANAL
+const vs=[0.35,3.14,2.20,0.17,0.83,-0.29,0.47];
+const vsc=vs.map(v=>v>=2?'rgba(105,240,174,.7)':v>=0?'rgba(105,240,174,.4)':'rgba(239,83,80,.5)');
+new Chart(document.getElementById('ch5'),{type:'bar',data:{labels:fm,datasets:[{label:'Var Sem %',data:vs,backgroundColor:vsc,borderColor:vs.map(v=>v>=0?'#69f0ae':'#ef5350'),borderWidth:2,borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)+'%'}},annotation:{annotations:{z:{type:'line',yMin:0,yMax:0,borderColor:'#ffd740',borderWidth:1.5,borderDash:[5,4]}}}},scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>(v>=0?'+':'')+v+'%',font:df}},x:{grid:{display:false},ticks:{font:df}}}}});
+
+// 6. SPREAD
+const sl=['Abr-Mar','Mai-Mar','Jun-Mar','Jul-Mar','Ago-Mar','Set-Mar'];
+const sv=[11.40,5.95,-2.20,-3.70,-6.70,-6.55];
+new Chart(document.getElementById('ch6'),{type:'bar',data:{labels:sl,datasets:[{data:sv,backgroundColor:sv.map(v=>v>=0?'rgba(105,240,174,.5)':'rgba(239,83,80,.4)'),borderColor:sv.map(v=>v>=0?'#69f0ae':'#ef5350'),borderWidth:2,borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)+' R$'}},annotation:{annotations:{z:{type:'line',yMin:0,yMax:0,borderColor:'#ffd740',borderWidth:1.5,borderDash:[5,4]}}}},scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>(v>=0?'+':'')+v,font:df}},x:{grid:{display:false},ticks:{font:df}}}}});
+
+// 7. RALLY
+const rd=['06/03\nFundo','09/03','10/03','11/03','12/03','13/03','16/03\n2ºFundo','17/03','18/03','19/03','20/03','23/03','24/03','25/03\nHOJE'];
+const rv=[346.05,347.40,346.80,347.25,347.50,346.60,346.45,347.70,348.85,349.60,350.65,350.70,351.40,354.65];
+const rp=rv.map(v=>v-346.05);
+new Chart(document.getElementById('ch7'),{type:'bar',data:{labels:rd,datasets:[{label:'Alta acumulada R$',data:rp,backgroundColor:rp.map(v=>v>=6?'rgba(105,240,174,.7)':v>=3?'rgba(105,240,174,.4)':'rgba(255,215,64,.4)'),borderColor:rp.map(v=>v>=6?'#69f0ae':v>=3?'#4CAF50':'#ffd740'),borderWidth:2,borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>{const p=(c.parsed.y/346.05*100).toFixed(2);return'+R$ '+c.parsed.y.toFixed(2)+' (+'+p+'%)'}}},annotation:{annotations:{max:{type:'line',yMin:8.60,yMax:8.60,borderColor:'#ffd740',borderWidth:1.5,borderDash:[5,4],label:{display:true,content:'Rally: +R$ 8,60 (+2,49%)',position:'end',backgroundColor:'#ffd740',color:'#000',font:{size:10,weight:'bold'},padding:4}}}}},scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>'+R$ '+v.toFixed(0),font:df}},x:{grid:{display:false},ticks:{font:{...df,size:9},maxRotation:0}}}}});
+</script>
+</body>
+</html>
